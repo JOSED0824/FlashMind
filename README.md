@@ -2,7 +2,8 @@
 StepUp AI 🚀 | Transforma temas complejos en micro-rutinas de aprendizaje de 15 minutos. Impulsado por un agente de IA que adapta el contenido a tu ritmo real de progreso. Aprende cualquier cosa, un "bit" a la vez.
 
 ## Requirements
-[1. Requerimientos Funcionales (RF)
+[
+1. Requerimientos Funcionales (RF)
 RF-01: Gestión de Temas por IA: El sistema debe permitir al usuario ingresar cualquier tema y generar un "path" o ruta de micro-lecciones.
 
 RF-02: Generación de Contenido Atómico: El agente IA debe fragmentar el conocimiento en lecciones que se consuman en < 15 minutos.
