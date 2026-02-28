@@ -2,7 +2,7 @@
 StepUp AI 🚀 | Transforma temas complejos en micro-rutinas de aprendizaje de 15 minutos. Impulsado por un agente de IA que adapta el contenido a tu ritmo real de progreso. Aprende cualquier cosa, un "bit" a la vez.
 
 ## Requirements
-[
+
 1. Requerimientos Funcionales (RF)
 RF-01: Gestión de Temas por IA: El sistema debe permitir al usuario ingresar cualquier tema y generar un "path" o ruta de micro-lecciones.
 
@@ -21,4 +21,4 @@ RNF-02: Escalabilidad de Datos: La base de datos debe permitir el crecimiento de
 
 RNF-03: Seguridad de API: Las llaves de la IA (OpenAI/Gemini) deben estar protegidas en el backend y nunca expuestas en el código del cliente.
 
-RNF-04: Interfaz Mobile-First: El diseño debe ser responsivo y optimizado para una mano (navegación pulgar).]
+RNF-04: Interfaz Mobile-First: El diseño debe ser responsivo y optimizado para una mano (navegación pulgar).
