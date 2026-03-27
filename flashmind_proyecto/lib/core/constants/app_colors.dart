@@ -2,38 +2,38 @@ import 'package:flutter/material.dart';
 
 abstract final class AppColors {
   // Backgrounds
-  static const Color background = Color(0xFF09090F);
-  static const Color surface = Color(0xFF12121F);
-  static const Color surface2 = Color(0xFF1A1A2E);
-  static const Color border = Color(0x12FFFFFF); // rgba(255,255,255,0.07)
+  static const Color background = Color(0xFF07131F);
+  static const Color surface = Color(0xFF102338);
+  static const Color surface2 = Color(0xFF16314D);
+  static const Color border = Color(0x22D7E8FF);
 
   // Text
-  static const Color textPrimary = Color(0xFFF0F0FF);
-  static const Color textSecondary = Color(0xFFB0B0C8);
-  static const Color textDisabled = Color(0xFF6B6B9A);
+  static const Color textPrimary = Color(0xFFF3F8FF);
+  static const Color textSecondary = Color(0xFFADC3DC);
+  static const Color textDisabled = Color(0xFF6E8FAF);
 
   // Feedback
-  static const Color correct = Color(0xFF11C97A);
-  static const Color incorrect = Color(0xFFFF4D6D);
-  static const Color warning = Color(0xFFFFA94D);
+  static const Color correct = Color(0xFF3AD29F);
+  static const Color incorrect = Color(0xFFFF6B81);
+  static const Color warning = Color(0xFFFFB15C);
 
-  // Accent (Tech / Purple)
-  static const Color accentStart = Color(0xFF7C5CFC);
-  static const Color accentEnd = Color(0xFFC56CFC);
+  // Accent (Ocean)
+  static const Color accentStart = Color(0xFF00B8D9);
+  static const Color accentEnd = Color(0xFF3AE6C1);
 
   // Category: History (orange)
-  static const Color historyStart = Color(0xFFFF6B2B);
-  static const Color historyEnd = Color(0xFFFF9F43);
+  static const Color historyStart = Color(0xFFF97316);
+  static const Color historyEnd = Color(0xFFF7B267);
 
   // Category: Science (blue)
-  static const Color scienceStart = Color(0xFF2B7CFF);
-  static const Color scienceEnd = Color(0xFF43C6FF);
+  static const Color scienceStart = Color(0xFF2D9CFF);
+  static const Color scienceEnd = Color(0xFF68D4FF);
 
   // Category: Languages (green)
-  static const Color languagesStart = Color(0xFF11C97A);
-  static const Color languagesEnd = Color(0xFF43FFB4);
+  static const Color languagesStart = Color(0xFF1FC28A);
+  static const Color languagesEnd = Color(0xFF5FF2B7);
 
-  // Category: Technology (purple)
-  static const Color techStart = Color(0xFF7C5CFC);
-  static const Color techEnd = Color(0xFFC56CFC);
+  // Category: Technology (cyan)
+  static const Color techStart = Color(0xFF00C2C7);
+  static const Color techEnd = Color(0xFF3CE9DC);
 }

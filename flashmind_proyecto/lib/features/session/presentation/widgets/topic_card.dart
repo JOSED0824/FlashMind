@@ -23,33 +23,53 @@ class TopicCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.surface.withValues(alpha: 0.95),
+              AppColors.surface2.withValues(alpha: 0.84),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppColors.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.16),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: Row(
           children: [
             Container(
-              width: 4,
+              width: 5,
               height: 80,
               decoration: BoxDecoration(
                 color: accentColor,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
+                  topLeft: Radius.circular(24),
+                  bottomLeft: Radius.circular(24),
                 ),
               ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         Expanded(
-                          child: Text(topic.title, style: AppTextStyles.label.copyWith(fontSize: 14)),
+                          child: Text(
+                            topic.title,
+                            style: AppTextStyles.label.copyWith(fontSize: 14),
+                          ),
                         ),
                         _DifficultyChip(difficulty: topic.difficulty),
                       ],
@@ -64,16 +84,27 @@ class TopicCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.quiz_rounded, size: 12, color: AppColors.textDisabled),
+                        const Icon(
+                          Icons.quiz_rounded,
+                          size: 12,
+                          color: AppColors.textDisabled,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${topic.questionCount} ${AppStrings.questions}',
                           style: AppTextStyles.labelSmall,
                         ),
                         const SizedBox(width: 12),
-                        const Icon(Icons.timer_rounded, size: 12, color: AppColors.textDisabled),
+                        const Icon(
+                          Icons.timer_rounded,
+                          size: 12,
+                          color: AppColors.textDisabled,
+                        ),
                         const SizedBox(width: 4),
-                        Text('7 ${AppStrings.minutes}', style: AppTextStyles.labelSmall),
+                        Text(
+                          '7 ${AppStrings.minutes}',
+                          style: AppTextStyles.labelSmall,
+                        ),
                       ],
                     ),
                   ],
@@ -82,7 +113,11 @@ class TopicCard extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.only(right: 14),
-              child: Icon(Icons.chevron_right_rounded, color: AppColors.textDisabled, size: 20),
+              child: Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textDisabled,
+                size: 20,
+              ),
             ),
           ],
         ),
@@ -108,7 +143,7 @@ class _DifficultyChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,

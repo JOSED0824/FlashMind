@@ -35,9 +35,9 @@ class _ResultsPageState extends State<ResultsPage> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A0D1F), Color(0xFF1A0A2E)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [Color(0xFF07121D), Color(0xFF0C2538), Color(0xFF12384E)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -67,9 +67,11 @@ class _ResultsPageState extends State<ResultsPage> {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          Icon(motivationalIcon, size: 44, color: AppColors.warning)
-              .animate()
-              .scale(duration: 500.ms, curve: Curves.elasticOut),
+          Icon(
+            motivationalIcon,
+            size: 44,
+            color: AppColors.warning,
+          ).animate().scale(duration: 500.ms, curve: Curves.elasticOut),
           const SizedBox(height: 12),
           Text(
             motivationalText,
@@ -192,9 +194,23 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        gradient: LinearGradient(
+          colors: [
+            AppColors.surface.withValues(alpha: 0.95),
+            AppColors.surface2.withValues(alpha: 0.82),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.16),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

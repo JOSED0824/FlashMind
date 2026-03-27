@@ -22,25 +22,30 @@ class OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (bgColor, borderColor, letterBg, contentColor) = switch (optionState) {
+    final (
+      bgColor,
+      borderColor,
+      letterBg,
+      contentColor,
+    ) = switch (optionState) {
       OptionState.neutral => (
-          AppColors.surface2,
-          AppColors.border,
-          AppColors.surface,
-          AppColors.textPrimary,
-        ),
+        AppColors.surface2,
+        AppColors.border,
+        AppColors.surface,
+        AppColors.textPrimary,
+      ),
       OptionState.correct => (
-          AppColors.correct.withValues(alpha: 0.10),
-          AppColors.correct,
-          AppColors.correct,
-          AppColors.correct,
-        ),
+        AppColors.correct.withValues(alpha: 0.10),
+        AppColors.correct,
+        AppColors.correct,
+        AppColors.correct,
+      ),
       OptionState.incorrect => (
-          AppColors.incorrect.withValues(alpha: 0.10),
-          AppColors.incorrect,
-          AppColors.incorrect,
-          AppColors.incorrect,
-        ),
+        AppColors.incorrect.withValues(alpha: 0.10),
+        AppColors.incorrect,
+        AppColors.incorrect,
+        AppColors.incorrect,
+      ),
     };
 
     final trailingIcon = switch (optionState) {
@@ -51,29 +56,29 @@ class OptionTile extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(color: borderColor),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(22),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
                     color: optionState == OptionState.neutral
                         ? AppColors.surface2
                         : letterBg,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                   child: Center(
                     child: Text(
