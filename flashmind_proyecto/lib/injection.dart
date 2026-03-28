@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'features/auth/data/models/user_model.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -49,11 +51,10 @@ Future<void> initDependencies() async {
   sl.registerSingleton<Box>(sessionsBox, instanceName: 'sessions');
 
   // ── Auth (Firebase) ───────────────────────────────────────────────────
-  // sl.registerLazySingleton<FirebaseAuthDataSource>(
-  //   () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance),
-  // );
-  // sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  sl.registerLazySingleton<FirebaseAuthDataSource>(
+    () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance),
+  );
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton(() => LoginUser(sl()));
   sl.registerLazySingleton(() => RegisterUser(sl()));
   sl.registerLazySingleton(() => LogoutUser(sl()));
