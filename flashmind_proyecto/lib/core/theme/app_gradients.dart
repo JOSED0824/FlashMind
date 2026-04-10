@@ -35,9 +35,9 @@ abstract final class AppGradients {
   );
 
   static const LinearGradient splashBackground = LinearGradient(
-    colors: [Color(0xFF0D0D1F), Color(0xFF1A0A2E)],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+    colors: [Color(0xFF04101A), Color(0xFF0A2234), Color(0xFF12344C)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
 
   static LinearGradient forCategory(CategoryGradientType type) {

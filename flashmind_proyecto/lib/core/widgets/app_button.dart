@@ -51,20 +51,37 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _buildPrimary() {
+    final isDisabled = onPressed == null || isLoading;
+
     return SizedBox(
       width: double.infinity,
       height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: onPressed != null ? AppGradients.accent : null,
-          color: onPressed != null ? null : AppColors.surface2,
+          gradient: isDisabled ? null : AppGradients.accent,
+          color: isDisabled ? AppColors.surface2 : null,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isDisabled
+                ? AppColors.border
+                : Colors.white.withValues(alpha: 0.20),
+          ),
+          boxShadow: isDisabled
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.accentStart.withValues(alpha: 0.38),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: isLoading ? null : onPressed,
             borderRadius: BorderRadius.circular(14),
+            splashColor: Colors.white.withValues(alpha: 0.14),
             child: Center(child: _buildContent(Colors.white)),
           ),
         ),
@@ -78,15 +95,19 @@ class AppButton extends StatelessWidget {
       height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.surface2.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.accentStart, width: 1.5),
+          border: Border.all(
+            color: AppColors.accentStart.withValues(alpha: 0.5),
+            width: 1.4,
+          ),
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: isLoading ? null : onPressed,
             borderRadius: BorderRadius.circular(14),
+            splashColor: AppColors.accentStart.withValues(alpha: 0.16),
             child: Center(child: _buildContent(AppColors.accentStart)),
           ),
         ),

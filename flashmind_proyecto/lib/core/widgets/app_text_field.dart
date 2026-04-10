@@ -45,31 +45,47 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      validator: widget.validator,
-      obscureText: _obscure,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      focusNode: widget.focusNode,
-      onChanged: widget.onChanged,
-      onFieldSubmitted: widget.onFieldSubmitted,
-      style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        suffixIcon: widget.obscureText
-            ? IconButton(
-                icon: Icon(
-                  _obscure
-                      ? Icons.visibility_off_rounded
-                      : Icons.visibility_rounded,
-                  color: AppColors.textDisabled,
-                  size: 20,
-                ),
-                onPressed: () => setState(() => _obscure = !_obscure),
-              )
-            : widget.suffix,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.16),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: widget.controller,
+        validator: widget.validator,
+        obscureText: _obscure,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        focusNode: widget.focusNode,
+        onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+        decoration: InputDecoration(
+          labelText: widget.label,
+          hintText: widget.hint,
+          labelStyle: AppTextStyles.label.copyWith(
+            color: AppColors.textSecondary,
+            fontSize: 11,
+          ),
+          suffixIcon: widget.obscureText
+              ? IconButton(
+                  icon: Icon(
+                    _obscure
+                        ? Icons.visibility_off_rounded
+                        : Icons.visibility_rounded,
+                    color: AppColors.textDisabled,
+                    size: 20,
+                  ),
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                )
+              : widget.suffix,
+        ),
       ),
     );
   }

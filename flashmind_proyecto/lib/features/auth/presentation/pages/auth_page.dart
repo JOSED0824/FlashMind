@@ -23,60 +23,94 @@ class AuthPage extends StatelessWidget {
         }
       },
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF09090F), Color(0xFF110B20)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, state) {
-                  final isLogin =
-                      state is AuthInitial ? state.isLoginForm : true;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const AuthHeader()
-                          .animate()
-                          .fadeIn(duration: 500.ms)
-                          .slideY(begin: -0.1),
-                      const SizedBox(height: 36),
-                      _AuthTogglePill(
-                        isLogin: isLogin,
-                        onToggle: () =>
-                            context.read<AuthCubit>().toggleForm(),
-                      )
-                          .animate()
-                          .fadeIn(delay: 150.ms, duration: 400.ms),
-                      const SizedBox(height: 28),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 280),
-                        transitionBuilder: (child, animation) =>
-                            FadeTransition(
-                          opacity: animation,
-                          child: SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(0, 0.04),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          ),
-                        ),
-                        child: isLogin
-                            ? const LoginForm(key: ValueKey('login'))
-                            : const RegisterForm(key: ValueKey('register')),
-                      ),
-                    ],
-                  );
-                },
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF05131D),
+                    Color(0xFF0A2234),
+                    Color(0xFF12344B),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
             ),
-          ),
+            Positioned(
+              top: -100,
+              right: -60,
+              child: Container(
+                width: 240,
+                height: 240,
+                decoration: BoxDecoration(
+                  color: AppColors.accentStart.withValues(alpha: 0.16),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -120,
+              left: -80,
+              child: Container(
+                width: 280,
+                height: 280,
+                decoration: BoxDecoration(
+                  color: AppColors.warning.withValues(alpha: 0.10),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
+                child: BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    final isLogin = state is AuthInitial
+                        ? state.isLoginForm
+                        : true;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const AuthHeader()
+                            .animate()
+                            .fadeIn(duration: 500.ms)
+                            .slideY(begin: -0.1),
+                        const SizedBox(height: 36),
+                        _AuthTogglePill(
+                          isLogin: isLogin,
+                          onToggle: () =>
+                              context.read<AuthCubit>().toggleForm(),
+                        ).animate().fadeIn(delay: 150.ms, duration: 400.ms),
+                        const SizedBox(height: 28),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 280),
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0, 0.04),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              ),
+                          child: isLogin
+                              ? const LoginForm(key: ValueKey('login'))
+                              : const RegisterForm(key: ValueKey('register')),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -95,9 +129,16 @@ class _AuthTogglePill extends StatelessWidget {
       height: 52,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.surface.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [

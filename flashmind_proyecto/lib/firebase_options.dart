@@ -31,20 +31,20 @@ class DefaultFirebaseOptions {
   // ── Reemplaza estos valores ejecutando: flutterfire configure ──────────
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
-    appId: '1:000000000000:web:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'PLACEHOLDER_PROJECT_ID',
-    authDomain: 'PLACEHOLDER_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'PLACEHOLDER_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyDqrCqx6XLhF0LRMqvCKn42eICqOQdpYkY',
+    appId: '1:259868031727:web:256865859d3990daf3391a',
+    messagingSenderId: '259868031727',
+    projectId: 'flashmind-46b39',
+    authDomain: 'flashmind-46b39.firebaseapp.com',
+    storageBucket: 'flashmind-46b39.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'PLACEHOLDER_API_KEY',
-    appId: '1:000000000000:android:0000000000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'PLACEHOLDER_PROJECT_ID',
-    storageBucket: 'PLACEHOLDER_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyBEEppirMhLg_GhrNcA1dO38vLtMLYezhU',
+    appId: '1:259868031727:android:88ce4af5f2e5b2dcf3391a',
+    messagingSenderId: '259868031727',
+    projectId: 'flashmind-46b39',
+    storageBucket: 'flashmind-46b39.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

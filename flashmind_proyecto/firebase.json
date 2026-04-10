@@ -1,0 +1,22 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "flashmind-46b39",
+                    "appId": "1:259868031727:android:88ce4af5f2e5b2dcf3391a",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "flashmind-46b39",
+                    "configurations": {
+                        "android": "1:259868031727:android:88ce4af5f2e5b2dcf3391a",
+                        "web": "1:259868031727:web:256865859d3990daf3391a"
+                    }
+                }
+            }
+        }
+    }
+}

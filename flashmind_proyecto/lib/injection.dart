@@ -51,20 +51,21 @@ Future<void> initDependencies() async {
   sl.registerSingleton<Box>(sessionsBox, instanceName: 'sessions');
 
   // ── Auth (Firebase) ───────────────────────────────────────────────────
-  // sl.registerLazySingleton<FirebaseAuthDataSource>(
-  //   () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance),
-  // );
-  // sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  sl.registerLazySingleton<FirebaseAuthDataSource>(
+    () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance),
+  );
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton(() => LoginUser(sl()));
   sl.registerLazySingleton(() => RegisterUser(sl()));
   sl.registerLazySingleton(() => LogoutUser(sl()));
-  sl.registerFactory(() => AuthCubit(
-        loginUser: sl(),
-        registerUser: sl(),
-        logoutUser: sl(),
-        authRepository: sl(),
-      ));
+  sl.registerFactory(
+    () => AuthCubit(
+      loginUser: sl(),
+      registerUser: sl(),
+      logoutUser: sl(),
+      authRepository: sl(),
+    ),
+  );
 
   // ── Home ──────────────────────────────────────────────────────────────
   sl.registerLazySingleton<HomeLocalDataSource>(
@@ -73,10 +74,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(sl()));
   sl.registerLazySingleton(() => GetCategories(sl()));
   sl.registerLazySingleton(() => GetUserProgress(sl()));
-  sl.registerFactory(() => HomeCubit(
-        getCategories: sl(),
-        getUserProgress: sl(),
-      ));
+  sl.registerFactory(
+    () => HomeCubit(getCategories: sl(), getUserProgress: sl()),
+  );
 
   // ── Session ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<QuestionsLocalDataSource>(
@@ -89,15 +89,16 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetQuestionsForTopic(sl()));
   sl.registerLazySingleton(() => SaveSessionResult(sl()));
   sl.registerFactory(() => TopicSelectionCubit(getTopicsByCategory: sl()));
-  sl.registerFactory(() => SessionCubit(
-        getQuestionsForTopic: sl(),
-        saveSessionResult: sl(),
-      ));
+  sl.registerFactory(
+    () => SessionCubit(getQuestionsForTopic: sl(), saveSessionResult: sl()),
+  );
 
   // ── Results ───────────────────────────────────────────────────────────
   sl.registerLazySingleton<ResultsLocalDataSource>(
     () => ResultsLocalDataSourceImpl(),
   );
-  sl.registerLazySingleton<ResultsRepository>(() => ResultsRepositoryImpl(sl()));
+  sl.registerLazySingleton<ResultsRepository>(
+    () => ResultsRepositoryImpl(sl()),
+  );
   sl.registerFactory(() => ResultsCubit(dataSource: sl()));
 }
