@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find . -type d -not -path */.*)",
-      "Bash(wc -l lib/**/*.dart)"
-    ]
-  }
-}
