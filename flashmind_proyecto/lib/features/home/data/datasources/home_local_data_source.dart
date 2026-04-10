@@ -19,29 +19,41 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
     CategoryEntity(
       id: 'history',
       name: 'Historia',
+      description: 'Civilizaciones, eventos y personajes que cambiaron el mundo.',
       iconCodePoint: 0xe54e, // Icons.history_edu_rounded
       totalTopics: 4,
+      estimatedMinutes: 7,
+      difficultyLevel: 'Principiante',
       gradientType: CategoryGradientType.history,
     ),
     CategoryEntity(
       id: 'science',
       name: 'Ciencia',
+      description: 'Física, química y biología explicadas en pequeñas dosis.',
       iconCodePoint: 0xe1b1, // Icons.science_rounded
       totalTopics: 4,
+      estimatedMinutes: 10,
+      difficultyLevel: 'Intermedio',
       gradientType: CategoryGradientType.science,
     ),
     CategoryEntity(
       id: 'languages',
       name: 'Idiomas',
+      description: 'Vocabulario y frases clave de distintos idiomas del mundo.',
       iconCodePoint: 0xe894, // Icons.language_rounded
       totalTopics: 4,
+      estimatedMinutes: 7,
+      difficultyLevel: 'Principiante',
       gradientType: CategoryGradientType.languages,
     ),
     CategoryEntity(
       id: 'technology',
       name: 'Tecnología',
+      description: 'Conceptos de programación, IA y tendencias digitales.',
       iconCodePoint: 0xe1d9, // Icons.memory_rounded
       totalTopics: 4,
+      estimatedMinutes: 12,
+      difficultyLevel: 'Avanzado',
       gradientType: CategoryGradientType.technology,
     ),
   ];

@@ -10,6 +10,7 @@ import '../../domain/entities/category_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import '../widgets/categories_grid.dart';
+import '../widgets/category_filter_bar.dart';
 import '../widgets/home_header.dart';
 import '../widgets/stats_row.dart';
 
@@ -25,6 +26,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedTab = 0;
+  String _selectedFilter = 'Todas';
+
+  static const _filters = ['Todas', 'Historia', 'Ciencia', 'Idiomas', 'Tecnología'];
 
   @override
   void initState() {
@@ -136,14 +140,14 @@ class _HomePageState extends State<HomePage> {
         SliverToBoxAdapter(child: StatsRow(progress: state.progress)),
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Categorias', style: AppTextStyles.headline),
+                Text('Categorías', style: AppTextStyles.headline),
                 const SizedBox(height: 4),
                 Text(
-                  'Elige un tema y completa una sesion de 7 minutos.',
+                  'Elige un tema y completa una sesión de aprendizaje.',
                   style: AppTextStyles.caption,
                 ),
               ],
@@ -151,8 +155,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SliverToBoxAdapter(
+          child: CategoryFilterBar(
+            selectedFilter: _selectedFilter,
+            filters: _filters,
+            onFilterSelected: (filter) =>
+                setState(() => _selectedFilter = filter),
+          ),
+        ),
+        SliverToBoxAdapter(
           child: CategoriesGrid(
-            categories: state.categories,
+            categories: _selectedFilter == 'Todas'
+                ? state.categories
+                : state.categories
+                    .where((c) => c.name == _selectedFilter)
+                    .toList(),
             onCategoryTap: (category) => _onCategoryTap(category),
           ),
         ),

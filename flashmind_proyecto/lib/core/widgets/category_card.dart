@@ -6,16 +6,22 @@ import '../theme/app_gradients.dart';
 
 class CategoryCard extends StatelessWidget {
   final String name;
+  final String description;
   final IconData icon;
   final int totalTopics;
+  final int estimatedMinutes;
+  final String difficultyLevel;
   final CategoryGradientType gradientType;
   final VoidCallback onTap;
 
   const CategoryCard({
     super.key,
     required this.name,
+    required this.description,
     required this.icon,
     required this.totalTopics,
+    required this.estimatedMinutes,
+    required this.difficultyLevel,
     required this.gradientType,
     required this.onTap,
   });
@@ -53,12 +59,13 @@ class CategoryCard extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -79,18 +86,65 @@ class CategoryCard extends StatelessWidget {
                     Icon(
                       icon,
                       color: Colors.white.withValues(alpha: 0.92),
-                      size: 28,
+                      size: 26,
                     ),
                   ],
                 ),
-                const Spacer(),
+                const SizedBox(height: 8),
                 Text(
                   name,
                   style: AppTextStyles.title.copyWith(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: AppTextStyles.caption.copyWith(
+                    color: Colors.white.withValues(alpha: 0.78),
+                    fontSize: 10,
+                    height: 1.3,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 11,
+                      color: Colors.white.withValues(alpha: 0.7),
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      '$estimatedMinutes min',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 9,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        difficultyLevel,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          fontSize: 9,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
