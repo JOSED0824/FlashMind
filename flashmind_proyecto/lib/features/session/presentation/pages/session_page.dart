@@ -49,11 +49,7 @@ class _SessionPageState extends State<SessionPage> {
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                const Color(0xFF07131F),
-                const Color(0xFF0B2134),
-                const Color(0xFF12334A).withValues(alpha: 0.96),
-              ],
+              colors: [context.acBg, context.acBgMid, context.acBgEnd],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -97,9 +93,9 @@ class _SessionPageState extends State<SessionPage> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
                   decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.74),
+                    color: context.acSurface.withValues(alpha: 0.74),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: context.acBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,14 +130,14 @@ class _SessionPageState extends State<SessionPage> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        AppColors.surface.withValues(alpha: 0.95),
-                        AppColors.surface2.withValues(alpha: 0.82),
+                        context.acSurface.withValues(alpha: 0.95),
+                        context.acSurface2.withValues(alpha: 0.82),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: AppColors.border),
+                    border: Border.all(color: context.acBorder),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.16),
@@ -243,9 +239,9 @@ class _SessionPageState extends State<SessionPage> {
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.7),
+        color: context.acSurface.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.acBorder),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -277,7 +273,7 @@ class _SessionPageState extends State<SessionPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.surface2,
+              color: context.acSurface2,
               borderRadius: BorderRadius.circular(999),
             ),
             child: Row(
@@ -307,11 +303,11 @@ class _SessionPageState extends State<SessionPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.surface2,
+        backgroundColor: context.acSurface2,
         title: Text('¿Salir de la sesión?', style: AppTextStyles.title),
         content: Text(
           'Tu progreso se perderá.',
-          style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+          style: AppTextStyles.body.copyWith(color: context.acTextSub),
         ),
         actions: [
           TextButton(

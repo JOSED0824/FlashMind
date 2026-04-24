@@ -1,11 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_text_styles.dart';
 import '../../../../../core/router/route_names.dart';
+import '../../../../../core/theme/theme_cubit.dart';
+import '../../../../../core/utils/no_params.dart';
 import '../../../../../core/widgets/app_loading_indicator.dart';
 import '../../../../../core/widgets/shimmer_loader.dart';
+import '../../../../../injection.dart';
+import '../../../../../features/auth/domain/usecases/logout_user.dart';
 import '../../domain/entities/category_entity.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
@@ -28,7 +33,18 @@ class _HomePageState extends State<HomePage> {
   int _selectedTab = 0;
   String _selectedFilter = 'Todas';
 
-  static const _filters = ['Todas', 'Historia', 'Ciencia', 'Idiomas', 'Tecnología'];
+  static const _filters = [
+    'Todas',
+    'Historia',
+    'Ciencia',
+    'Idiomas',
+    'Tecnología',
+    'Matemáticas',
+    'Arte y Cultura',
+    'Geografía',
+    'Filosofía',
+    'Economía',
+  ];
 
   @override
   void initState() {
@@ -42,11 +58,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              const Color(0xFF07131F),
-              const Color(0xFF0B2032),
-              const Color(0xFF102C42).withValues(alpha: 0.96),
-            ],
+            colors: [context.acBg, context.acBgMid, context.acBgEnd],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -74,12 +86,12 @@ class _HomePageState extends State<HomePage> {
         margin: const EdgeInsets.fromLTRB(14, 0, 14, 14),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          color: AppColors.surface.withValues(alpha: 0.9),
+          color: context.acNavBar.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.acBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.24),
+              color: Colors.black.withValues(alpha: 0.14),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
@@ -92,9 +104,7 @@ class _HomePageState extends State<HomePage> {
           height: 62,
           indicatorColor: AppColors.accentStart.withValues(alpha: 0.2),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          onDestinationSelected: (index) {
-            setState(() => _selectedTab = index);
-          },
+          onDestinationSelected: (i) => setState(() => _selectedTab = i),
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
@@ -144,11 +154,14 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Categorías', style: AppTextStyles.headline),
+                Text('Categorías',
+                    style: AppTextStyles.headline
+                        .copyWith(color: context.acText)),
                 const SizedBox(height: 4),
                 Text(
                   'Elige un tema y completa una sesión de aprendizaje.',
-                  style: AppTextStyles.caption,
+                  style:
+                      AppTextStyles.caption.copyWith(color: context.acTextSub),
                 ),
               ],
             ),
@@ -158,8 +171,7 @@ class _HomePageState extends State<HomePage> {
           child: CategoryFilterBar(
             selectedFilter: _selectedFilter,
             filters: _filters,
-            onFilterSelected: (filter) =>
-                setState(() => _selectedFilter = filter),
+            onFilterSelected: (f) => setState(() => _selectedFilter = f),
           ),
         ),
         SliverToBoxAdapter(
@@ -169,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                 : state.categories
                     .where((c) => c.name == _selectedFilter)
                     .toList(),
-            onCategoryTap: (category) => _onCategoryTap(category),
+            onCategoryTap: _onCategoryTap,
           ),
         ),
       ],
@@ -177,62 +189,100 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildProfileContent(HomeLoaded state) {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final photoUrl = firebaseUser?.photoURL;
+    final email = firebaseUser?.email ?? '';
+    final completedTopics = state.progress.completedTopicIds.length;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Perfil', style: AppTextStyles.headline),
-          const SizedBox(height: 12),
+          Text('Perfil',
+              style: AppTextStyles.headline.copyWith(color: context.acText)),
+          const SizedBox(height: 16),
+          // Avatar card
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 18),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.surface.withValues(alpha: 0.95),
-                  AppColors.surface2.withValues(alpha: 0.82),
+                  context.acSurface,
+                  context.acSurface2,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.acBorder),
             ),
             child: Column(
               children: [
+                // Avatar con foto de Google o inicial
                 CircleAvatar(
-                  radius: 34,
-                  backgroundColor: AppColors.accentStart.withValues(alpha: 0.2),
-                  child: Text(
-                    widget.username.isNotEmpty
-                        ? widget.username[0].toUpperCase()
-                        : 'U',
-                    style: AppTextStyles.headline,
-                  ),
+                  radius: 40,
+                  backgroundColor:
+                      AppColors.accentStart.withValues(alpha: 0.2),
+                  backgroundImage:
+                      photoUrl != null ? NetworkImage(photoUrl) : null,
+                  child: photoUrl == null
+                      ? Text(
+                          widget.username.isNotEmpty
+                              ? widget.username[0].toUpperCase()
+                              : 'U',
+                          style: AppTextStyles.display
+                              .copyWith(color: AppColors.accentStart),
+                        )
+                      : null,
                 ),
-                const SizedBox(height: 10),
-                Text(widget.username, style: AppTextStyles.title),
+                const SizedBox(height: 14),
+                Text(widget.username,
+                    style: AppTextStyles.title
+                        .copyWith(color: context.acText)),
                 const SizedBox(height: 4),
-                Text('ID: ${widget.userId}', style: AppTextStyles.caption),
+                Text(email,
+                    style: AppTextStyles.caption
+                        .copyWith(color: context.acTextSub)),
               ],
             ),
           ),
-          const SizedBox(height: 14),
-          _InfoTile(
-            icon: Icons.star_rounded,
-            title: 'Puntos totales',
-            value: '${state.progress.totalPoints}',
-          ),
-          _InfoTile(
-            icon: Icons.check_circle_rounded,
-            title: 'Sesiones completadas',
-            value: '${state.progress.totalSessions}',
-          ),
-          _InfoTile(
-            icon: Icons.local_fire_department_rounded,
-            title: 'Racha actual',
-            value: '${state.progress.currentStreak} dias',
+          const SizedBox(height: 16),
+          // Estadísticas en grid 2x2
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 2.0,
+            children: [
+              _StatCard(
+                icon: Icons.star_rounded,
+                label: 'Puntos',
+                value: '${state.progress.totalPoints}',
+                color: AppColors.warning,
+              ),
+              _StatCard(
+                icon: Icons.check_circle_rounded,
+                label: 'Sesiones',
+                value: '${state.progress.totalSessions}',
+                color: AppColors.correct,
+              ),
+              _StatCard(
+                icon: Icons.local_fire_department_rounded,
+                label: 'Racha',
+                value: '${state.progress.currentStreak} días',
+                color: const Color(0xFFFF6B35),
+              ),
+              _StatCard(
+                icon: Icons.school_rounded,
+                label: 'Temas vistos',
+                value: '$completedTopics',
+                color: AppColors.accentStart,
+              ),
+            ],
           ),
         ],
       ),
@@ -245,27 +295,53 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Ajustes', style: AppTextStyles.headline),
-          const SizedBox(height: 12),
-          _InfoTile(
-            icon: Icons.palette_rounded,
-            title: 'Tema visual',
-            value: 'Modo oscuro personalizado',
+          Text('Ajustes',
+              style:
+                  AppTextStyles.headline.copyWith(color: context.acText)),
+          const SizedBox(height: 20),
+          BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, themeMode) {
+              final isDark = themeMode == ThemeMode.dark;
+              return _SettingsTile(
+                icon: isDark
+                    ? Icons.dark_mode_rounded
+                    : Icons.light_mode_rounded,
+                title: 'Tema visual',
+                subtitle: isDark ? 'Modo oscuro' : 'Modo claro',
+                trailing: Switch(
+                  value: isDark,
+                  onChanged: (_) =>
+                      context.read<ThemeCubit>().toggleTheme(),
+                  activeThumbColor: AppColors.accentStart,
+                  activeTrackColor:
+                      AppColors.accentStart.withValues(alpha: 0.35),
+                ),
+              );
+            },
           ),
-          _InfoTile(
-            icon: Icons.notifications_rounded,
-            title: 'Recordatorios',
-            value: 'Activados',
-          ),
-          _InfoTile(
-            icon: Icons.language_rounded,
-            title: 'Idioma',
-            value: 'Espanol',
-          ),
-          _InfoTile(
-            icon: Icons.privacy_tip_rounded,
-            title: 'Privacidad',
-            value: 'Gestionar permisos',
+          const SizedBox(height: 32),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.logout_rounded,
+                  color: AppColors.incorrect),
+              label: Text(
+                'Cerrar sesión',
+                style: AppTextStyles.label
+                    .copyWith(color: AppColors.incorrect),
+              ),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                side: const BorderSide(color: AppColors.incorrect),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              onPressed: () async {
+                await sl<LogoutUser>()(const NoParams());
+                if (context.mounted) context.go(RouteNames.auth);
+              },
+            ),
           ),
         ],
       ),
@@ -284,7 +360,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildShimmer() {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,29 +371,11 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 24),
           Row(
             children: const [
-              Expanded(
-                child: ShimmerLoader(
-                  width: double.infinity,
-                  height: 80,
-                  borderRadius: 14,
-                ),
-              ),
+              Expanded(child: ShimmerLoader(width: double.infinity, height: 80, borderRadius: 14)),
               SizedBox(width: 10),
-              Expanded(
-                child: ShimmerLoader(
-                  width: double.infinity,
-                  height: 80,
-                  borderRadius: 14,
-                ),
-              ),
+              Expanded(child: ShimmerLoader(width: double.infinity, height: 80, borderRadius: 14)),
               SizedBox(width: 10),
-              Expanded(
-                child: ShimmerLoader(
-                  width: double.infinity,
-                  height: 80,
-                  borderRadius: 14,
-                ),
-              ),
+              Expanded(child: ShimmerLoader(width: double.infinity, height: 80, borderRadius: 14)),
             ],
           ),
           const SizedBox(height: 28),
@@ -333,10 +391,9 @@ class _HomePageState extends State<HomePage> {
             children: List.generate(
               4,
               (_) => const ShimmerLoader(
-                width: double.infinity,
-                height: double.infinity,
-                borderRadius: 20,
-              ),
+                  width: double.infinity,
+                  height: double.infinity,
+                  borderRadius: 20),
             ),
           ),
         ],
@@ -345,26 +402,85 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
+// ── Stat card para el perfil ────────────────────────────────────────────────
 
-  const _InfoTile({
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StatCard({
     required this.icon,
-    required this.title,
+    required this.label,
     required this.value,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: context.acSurface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.acBorder),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(9),
+            ),
+            child: Icon(icon, color: color, size: 17),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(value,
+                    style: AppTextStyles.label
+                        .copyWith(color: context.acText, fontSize: 15)),
+                Text(label,
+                    style: AppTextStyles.caption
+                        .copyWith(color: context.acTextSub, fontSize: 11)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Settings tile ────────────────────────────────────────────────────────────
+
+class _SettingsTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget trailing;
+
+  const _SettingsTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.82),
+        color: context.acSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.acBorder),
       ),
       child: Row(
         children: [
@@ -382,12 +498,17 @@ class _InfoTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTextStyles.label),
+                Text(title,
+                    style: AppTextStyles.label
+                        .copyWith(color: context.acText)),
                 const SizedBox(height: 2),
-                Text(value, style: AppTextStyles.caption),
+                Text(subtitle,
+                    style: AppTextStyles.caption
+                        .copyWith(color: context.acTextSub)),
               ],
             ),
           ),
+          trailing,
         ],
       ),
     );

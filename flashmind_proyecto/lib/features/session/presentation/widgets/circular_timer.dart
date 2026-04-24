@@ -32,7 +32,11 @@ class CircularTimer extends StatelessWidget {
       width: 96,
       height: 96,
       child: CustomPaint(
-        painter: _ArcPainter(progress: progress, color: arcColor),
+        painter: _ArcPainter(
+          progress: progress,
+          color: arcColor,
+          trackColor: context.acBorder,
+        ),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -40,7 +44,7 @@ class CircularTimer extends StatelessWidget {
               Text(
                 timeLabel,
                 style: AppTextStyles.label.copyWith(
-                  color: isLow ? AppColors.incorrect : AppColors.textPrimary,
+                  color: isLow ? AppColors.incorrect : context.acText,
                   fontWeight: FontWeight.w700,
                   fontSize: 16,
                 ),
@@ -48,7 +52,7 @@ class CircularTimer extends StatelessWidget {
               Text(
                 'min',
                 style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.acTextSub,
                   fontSize: 10,
                 ),
               ),
@@ -63,8 +67,9 @@ class CircularTimer extends StatelessWidget {
 class _ArcPainter extends CustomPainter {
   final double progress;
   final Color color;
+  final Color trackColor;
 
-  _ArcPainter({required this.progress, required this.color});
+  _ArcPainter({required this.progress, required this.color, required this.trackColor});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -74,7 +79,7 @@ class _ArcPainter extends CustomPainter {
 
     // Background track
     final trackPaint = Paint()
-      ..color = AppColors.border
+      ..color = trackColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -101,5 +106,5 @@ class _ArcPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ArcPainter old) =>
-      old.progress != progress || old.color != color;
+      old.progress != progress || old.color != color || old.trackColor != trackColor;
 }

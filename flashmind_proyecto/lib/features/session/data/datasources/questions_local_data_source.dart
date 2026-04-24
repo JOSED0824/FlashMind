@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../domain/entities/question_entity.dart';
 import '../../domain/entities/topic_entity.dart';
-import 'mock_questions_data.dart';
 
 abstract interface class QuestionsLocalDataSource {
   Future<List<TopicEntity>> getTopicsByCategory(String categoryId);
@@ -9,21 +10,38 @@ abstract interface class QuestionsLocalDataSource {
 }
 
 class QuestionsLocalDataSourceImpl implements QuestionsLocalDataSource {
+  Map<String, dynamic>? _cache;
+
+  Future<Map<String, dynamic>> _loadData() async {
+    _cache ??= jsonDecode(
+      await rootBundle.loadString('assets/data/questions.json'),
+    ) as Map<String, dynamic>;
+    return _cache!;
+  }
+
   @override
   Future<List<TopicEntity>> getTopicsByCategory(String categoryId) async {
-    final topicsData = MockQuestionsData.topics[categoryId];
+    final data = await _loadData();
+    final topicsData =
+        (data['topics'] as Map<String, dynamic>)[categoryId] as List?;
     if (topicsData == null) {
       throw NotFoundException('Categoría no encontrada: $categoryId');
     }
-    return topicsData.map(_mapToTopicEntity).toList();
+    return topicsData
+        .cast<Map<String, dynamic>>()
+        .map(_mapToTopicEntity)
+        .toList();
   }
 
   @override
   Future<List<QuestionEntity>> getQuestionsForTopic(String topicId) async {
-    final allQuestions = MockQuestionsData.questions.values
-        .expand((list) => list)
-        .where((q) => q['topicId'] == topicId)
-        .toList();
+    final data = await _loadData();
+    final allQuestions =
+        (data['questions'] as Map<String, dynamic>)
+            .values
+            .expand((list) => (list as List).cast<Map<String, dynamic>>())
+            .where((q) => q['topicId'] == topicId)
+            .toList();
     if (allQuestions.isEmpty) {
       throw NotFoundException('No hay preguntas para el tema: $topicId');
     }
@@ -32,8 +50,7 @@ class QuestionsLocalDataSourceImpl implements QuestionsLocalDataSource {
   }
 
   TopicEntity _mapToTopicEntity(Map<String, dynamic> data) {
-    final difficultyStr = data['difficulty'] as String;
-    final difficulty = switch (difficultyStr) {
+    final difficulty = switch (data['difficulty'] as String) {
       'easy' => DifficultyLevel.easy,
       'medium' => DifficultyLevel.medium,
       'hard' => DifficultyLevel.hard,

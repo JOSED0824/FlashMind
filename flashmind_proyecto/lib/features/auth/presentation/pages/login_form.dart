@@ -7,6 +7,7 @@ import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_text_field.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import '../widgets/google_sign_in_button.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -77,6 +78,10 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: isLoading ? null : _submit,
                 isLoading: isLoading,
               ),
+              const SizedBox(height: 16),
+              const AuthDivider(),
+              const SizedBox(height: 16),
+              GoogleSignInButton(isLoading: isLoading),
               if (state is AuthFailure) ...[
                 const SizedBox(height: 12),
                 Text(

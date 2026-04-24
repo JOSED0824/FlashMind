@@ -12,7 +12,20 @@
           "package_name": "com.example.flashmind_proyecto"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "259868031727-sr5u9sdhl77dkok5iur8nk3nd08su4t9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flashmind_proyecto",
+            "certificate_hash": "116615d1dd32f13698e257ed65ce4c3681c14ebd"
+          }
+        },
+        {
+          "client_id": "259868031727-u4q43o984t4snu1hbda5cgnjnft77l6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBEEppirMhLg_GhrNcA1dO38vLtMLYezhU"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259868031727-u4q43o984t4snu1hbda5cgnjnft77l6b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "259868031727-kpstbd0e2duapsabirc8du6kcq3bsahi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flashmindProyecto"
+              }
+            }
+          ]
         }
       }
     }

@@ -33,9 +33,9 @@ class _ResultsPageState extends State<ResultsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF07121D), Color(0xFF0C2538), Color(0xFF12384E)],
+            colors: [context.acBg, context.acBgMid, context.acBgEnd],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -149,7 +149,7 @@ class _ResultsPageState extends State<ResultsPage> {
           icon: Icons.timer_rounded,
           value: result.formattedTime,
           label: 'Tiempo',
-          color: AppColors.textPrimary,
+          color: context.acText,
         ),
         _StatCard(
           icon: Icons.local_fire_department_rounded,
@@ -196,14 +196,14 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.surface.withValues(alpha: 0.95),
-            AppColors.surface2.withValues(alpha: 0.82),
+            context.acSurface.withValues(alpha: 0.95),
+            context.acSurface2.withValues(alpha: 0.82),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.acBorder),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.16),

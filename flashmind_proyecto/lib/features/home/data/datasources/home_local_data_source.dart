@@ -56,6 +56,56 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
       difficultyLevel: 'Avanzado',
       gradientType: CategoryGradientType.technology,
     ),
+    CategoryEntity(
+      id: 'mathematics',
+      name: 'Matemáticas',
+      description: 'Álgebra, geometría, estadística y cálculo en pequeñas dosis.',
+      iconCodePoint: 0xe3af, // Icons.calculate_rounded
+      totalTopics: 4,
+      estimatedMinutes: 10,
+      difficultyLevel: 'Intermedio',
+      gradientType: CategoryGradientType.mathematics,
+    ),
+    CategoryEntity(
+      id: 'art',
+      name: 'Arte y Cultura',
+      description: 'Pintura, música, literatura y cine de todas las épocas.',
+      iconCodePoint: 0xe3ae, // Icons.palette_rounded
+      totalTopics: 4,
+      estimatedMinutes: 7,
+      difficultyLevel: 'Principiante',
+      gradientType: CategoryGradientType.art,
+    ),
+    CategoryEntity(
+      id: 'geography',
+      name: 'Geografía',
+      description: 'Capitales, continentes, climas y maravillas del planeta.',
+      iconCodePoint: 0xe894, // Icons.public_rounded
+      totalTopics: 4,
+      estimatedMinutes: 7,
+      difficultyLevel: 'Principiante',
+      gradientType: CategoryGradientType.geography,
+    ),
+    CategoryEntity(
+      id: 'philosophy',
+      name: 'Filosofía',
+      description: 'Grandes pensadores, ética y las preguntas fundamentales.',
+      iconCodePoint: 0xe88e, // Icons.psychology_rounded
+      totalTopics: 4,
+      estimatedMinutes: 10,
+      difficultyLevel: 'Avanzado',
+      gradientType: CategoryGradientType.philosophy,
+    ),
+    CategoryEntity(
+      id: 'economics',
+      name: 'Economía',
+      description: 'Microeconomía, macroeconomía y finanzas personales.',
+      iconCodePoint: 0xe227, // Icons.trending_up_rounded
+      totalTopics: 4,
+      estimatedMinutes: 10,
+      difficultyLevel: 'Intermedio',
+      gradientType: CategoryGradientType.economics,
+    ),
   ];
 
   @override

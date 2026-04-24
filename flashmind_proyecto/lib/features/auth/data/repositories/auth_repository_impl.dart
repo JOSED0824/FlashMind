@@ -36,6 +36,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, UserEntity>> signInWithGoogle() async {
+    try {
+      final entity = await dataSource.signInWithGoogle();
+      return Right(entity);
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     try {
       await dataSource.logout();

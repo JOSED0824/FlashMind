@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'core/theme/theme_cubit.dart';
 import 'features/auth/data/datasources/firebase_auth_data_source.dart';
 import 'features/auth/data/models/user_model.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -50,9 +53,17 @@ Future<void> initDependencies() async {
   sl.registerSingleton<Box<ProgressModel>>(progressBox);
   sl.registerSingleton<Box>(sessionsBox, instanceName: 'sessions');
 
+  // ── Theme ─────────────────────────────────────────────────────────────
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
+
   // ── Auth (Firebase) ───────────────────────────────────────────────────
+  sl.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn(
+        clientId: kIsWeb
+            ? '259868031727-u4q43o984t4snu1hbda5cgnjnft77l6b.apps.googleusercontent.com'
+            : null,
+      ));
   sl.registerLazySingleton<FirebaseAuthDataSource>(
-    () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance),
+    () => FirebaseAuthDataSourceImpl(FirebaseAuth.instance, sl()),
   );
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
   sl.registerLazySingleton(() => LoginUser(sl()));

@@ -166,6 +166,16 @@ extension CategoryCardColors on CategoryGradientType {
         return AppColors.languagesStart;
       case CategoryGradientType.technology:
         return AppColors.techStart;
+      case CategoryGradientType.mathematics:
+        return AppColors.mathStart;
+      case CategoryGradientType.art:
+        return AppColors.artStart;
+      case CategoryGradientType.geography:
+        return AppColors.geoStart;
+      case CategoryGradientType.philosophy:
+        return AppColors.philStart;
+      case CategoryGradientType.economics:
+        return AppColors.econStart;
     }
   }
 }

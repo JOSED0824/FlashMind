@@ -29,10 +29,10 @@ class OptionTile extends StatelessWidget {
       contentColor,
     ) = switch (optionState) {
       OptionState.neutral => (
-        AppColors.surface2,
-        AppColors.border,
-        AppColors.surface,
-        AppColors.textPrimary,
+        context.acSurface2,
+        context.acBorder,
+        context.acSurface,
+        context.acText,
       ),
       OptionState.correct => (
         AppColors.correct.withValues(alpha: 0.10),
@@ -76,7 +76,7 @@ class OptionTile extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     color: optionState == OptionState.neutral
-                        ? AppColors.surface2
+                        ? context.acSurface2
                         : letterBg,
                     borderRadius: BorderRadius.circular(999),
                   ),
@@ -85,7 +85,7 @@ class OptionTile extends StatelessWidget {
                       _letters[index],
                       style: AppTextStyles.label.copyWith(
                         color: optionState == OptionState.neutral
-                            ? AppColors.textSecondary
+                            ? context.acTextSub
                             : Colors.white,
                         fontSize: 12,
                       ),

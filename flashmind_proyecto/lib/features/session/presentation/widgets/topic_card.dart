@@ -25,14 +25,14 @@ class TopicCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.surface.withValues(alpha: 0.95),
-              AppColors.surface2.withValues(alpha: 0.84),
+              context.acSurface.withValues(alpha: 0.95),
+              context.acSurface2.withValues(alpha: 0.84),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.acBorder),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.16),

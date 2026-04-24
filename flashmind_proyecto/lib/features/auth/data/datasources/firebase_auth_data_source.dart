@@ -1,18 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../domain/entities/user_entity.dart';
 
 abstract interface class FirebaseAuthDataSource {
   Future<UserEntity> login(String email, String password);
   Future<UserEntity> register(String username, String email, String password);
+  Future<UserEntity> signInWithGoogle();
   Future<void> logout();
   Future<UserEntity?> getCurrentUser();
 }
 
 class FirebaseAuthDataSourceImpl implements FirebaseAuthDataSource {
   final FirebaseAuth _auth;
+  final GoogleSignIn _googleSignIn;
 
-  FirebaseAuthDataSourceImpl(this._auth);
+  FirebaseAuthDataSourceImpl(this._auth, this._googleSignIn);
 
   @override
   Future<UserEntity> login(String email, String password) async {
@@ -44,7 +48,41 @@ class FirebaseAuthDataSourceImpl implements FirebaseAuthDataSource {
   }
 
   @override
+  Future<UserEntity> signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        // On web, signInWithPopup provides the idToken correctly
+        final provider = GoogleAuthProvider();
+        provider.addScope('email');
+        provider.addScope('profile');
+        final userCredential = await _auth.signInWithPopup(provider);
+        return _mapUser(userCredential.user!);
+      } else {
+        // On mobile, use google_sign_in package
+        final googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) {
+          throw const ValidationException('Inicio de sesión con Google cancelado');
+        }
+        final googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        final userCredential = await _auth.signInWithCredential(credential);
+        return _mapUser(userCredential.user!);
+      }
+    } on ValidationException {
+      rethrow;
+    } on FirebaseAuthException catch (e) {
+      throw ValidationException(_mapFirebaseError(e.code));
+    } catch (_) {
+      throw const ValidationException('Error al iniciar sesión con Google');
+    }
+  }
+
+  @override
   Future<void> logout() async {
+    if (!kIsWeb) await _googleSignIn.signOut();
     await _auth.signOut();
   }
 
@@ -78,6 +116,10 @@ class FirebaseAuthDataSourceImpl implements FirebaseAuthDataSource {
         return 'Demasiados intentos. Intenta más tarde';
       case 'network-request-failed':
         return 'Sin conexión a internet';
+      case 'popup-closed-by-user':
+        return 'Inicio de sesión con Google cancelado';
+      case 'popup-blocked':
+        return 'Popup bloqueado. Permite popups en este sitio';
       default:
         return 'Error de autenticación. Intenta de nuevo';
     }
