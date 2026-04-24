@@ -27,14 +27,14 @@ class HomeHeader extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.surface.withValues(alpha: 0.96),
-            AppColors.surface2.withValues(alpha: 0.82),
+            context.acSurface.withValues(alpha: 0.96),
+            context.acSurface2.withValues(alpha: 0.82),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.acBorder),
       ),
       child: Column(
         children: [
@@ -79,7 +79,7 @@ class HomeHeader extends StatelessWidget {
                     Text(
                       'Perfil activo',
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary.withValues(alpha: 0.9),
+                        color: context.acTextSub,
                       ),
                     ),
                   ],
@@ -91,13 +91,13 @@ class HomeHeader extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.surface2,
+                  color: context.acSurface2,
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: context.acBorder),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_circle_rounded,
-                  color: AppColors.textPrimary,
+                  color: context.acText,
                   size: 18,
                 ),
               ),
@@ -115,12 +115,12 @@ class HomeHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: streak > 0
                         ? AppColors.warning.withValues(alpha: 0.18)
-                        : AppColors.surface2,
+                        : context.acSurface2,
                     borderRadius: BorderRadius.circular(999),
                     border: Border.all(
                       color: streak > 0
                           ? AppColors.warning.withValues(alpha: 0.3)
-                          : AppColors.border,
+                          : context.acBorder,
                     ),
                   ),
                   child: Row(
@@ -132,7 +132,7 @@ class HomeHeader extends StatelessWidget {
                             : Icons.bolt_rounded,
                         color: streak > 0
                             ? AppColors.warning
-                            : AppColors.textSecondary,
+                            : context.acTextSub,
                         size: 16,
                       ),
                       const SizedBox(width: 4),
@@ -143,7 +143,7 @@ class HomeHeader extends StatelessWidget {
                         style: AppTextStyles.label.copyWith(
                           color: streak > 0
                               ? AppColors.warning
-                              : AppColors.textSecondary,
+                              : context.acTextSub,
                         ),
                       ),
                     ],

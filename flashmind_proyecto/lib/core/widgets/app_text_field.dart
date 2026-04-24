@@ -65,12 +65,12 @@ class _AppTextFieldState extends State<AppTextField> {
         focusNode: widget.focusNode,
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onFieldSubmitted,
-        style: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+        style: AppTextStyles.body.copyWith(color: context.acText),
         decoration: InputDecoration(
           labelText: widget.label,
           hintText: widget.hint,
           labelStyle: AppTextStyles.label.copyWith(
-            color: AppColors.textSecondary,
+            color: context.acTextSub,
             fontSize: 11,
           ),
           suffixIcon: widget.obscureText

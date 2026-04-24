@@ -24,7 +24,7 @@ class ScoreRing extends StatelessWidget {
       animation: true,
       animationDuration: 1200,
       circularStrokeCap: CircularStrokeCap.round,
-      backgroundColor: AppColors.surface2,
+      backgroundColor: context.acSurface2,
       progressColor: _ringColor,
       center: Column(
         mainAxisSize: MainAxisSize.min,

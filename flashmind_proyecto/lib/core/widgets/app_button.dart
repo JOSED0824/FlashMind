@@ -44,13 +44,13 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (_variant) {
-      _AppButtonVariant.primary => _buildPrimary(),
-      _AppButtonVariant.secondary => _buildSecondary(),
+      _AppButtonVariant.primary => _buildPrimary(context),
+      _AppButtonVariant.secondary => _buildSecondary(context),
       _AppButtonVariant.text => _buildText(),
     };
   }
 
-  Widget _buildPrimary() {
+  Widget _buildPrimary(BuildContext context) {
     final isDisabled = onPressed == null || isLoading;
 
     return SizedBox(
@@ -59,11 +59,11 @@ class AppButton extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: isDisabled ? null : AppGradients.accent,
-          color: isDisabled ? AppColors.surface2 : null,
+          color: isDisabled ? context.acSurface2 : null,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isDisabled
-                ? AppColors.border
+                ? context.acBorder
                 : Colors.white.withValues(alpha: 0.20),
           ),
           boxShadow: isDisabled
@@ -89,13 +89,13 @@ class AppButton extends StatelessWidget {
     );
   }
 
-  Widget _buildSecondary() {
+  Widget _buildSecondary(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.surface2.withValues(alpha: 0.45),
+          color: context.acSurface2.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: AppColors.accentStart.withValues(alpha: 0.5),

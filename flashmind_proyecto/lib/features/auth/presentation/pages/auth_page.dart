@@ -125,9 +125,9 @@ class _AuthTogglePill extends StatelessWidget {
       height: 52,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.78),
+        color: context.acSurface.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.acBorder),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.18),
@@ -187,7 +187,7 @@ class _Tab extends StatelessWidget {
           child: Text(
             label,
             style: AppTextStyles.label.copyWith(
-              color: isActive ? Colors.white : AppColors.textSecondary,
+              color: isActive ? Colors.white : context.acTextSub,
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
             ),
           ),

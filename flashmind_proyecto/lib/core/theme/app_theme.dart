@@ -4,6 +4,10 @@ import '../constants/app_colors.dart';
 import '../constants/app_text_styles.dart';
 
 abstract final class AppTheme {
+  static const _lightText = Color(0xFF0D2137);
+  static const _lightTextSub = Color(0xFF4A6D8C);
+  static const _lightTextDisabled = Color(0xFF9BB8D4);
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -14,16 +18,25 @@ abstract final class AppTheme {
         primary: Color(0xFF00B8D9),
         secondary: Color(0xFF3AE6C1),
         error: Color(0xFFFF6B81),
-        onSurface: Color(0xFF0D2137),
+        onSurface: _lightText,
         onPrimary: Colors.white,
       ),
-      textTheme: GoogleFonts.manropeTextTheme(ThemeData.light().textTheme),
+      textTheme: GoogleFonts.manropeTextTheme(ThemeData.light().textTheme).copyWith(
+        displayLarge: AppTextStyles.display.copyWith(color: _lightText),
+        headlineMedium: AppTextStyles.headline.copyWith(color: _lightText),
+        titleLarge: AppTextStyles.title.copyWith(color: _lightText),
+        bodyLarge: AppTextStyles.bodyLarge.copyWith(color: _lightText),
+        bodyMedium: AppTextStyles.body.copyWith(color: _lightText),
+        bodySmall: AppTextStyles.caption.copyWith(color: _lightTextSub),
+        labelMedium: AppTextStyles.label.copyWith(color: _lightText),
+        labelSmall: AppTextStyles.labelSmall.copyWith(color: _lightTextSub),
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFFF0F7FF),
         elevation: 0,
         centerTitle: true,
         scrolledUnderElevation: 0,
-        iconTheme: IconThemeData(color: Color(0xFF0D2137)),
+        iconTheme: IconThemeData(color: _lightText),
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
@@ -37,6 +50,8 @@ abstract final class AppTheme {
         filled: true,
         fillColor: const Color(0xFFE8F4FF),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+        hintStyle: AppTextStyles.body.copyWith(color: _lightTextDisabled),
+        labelStyle: AppTextStyles.caption.copyWith(color: _lightTextSub, fontSize: 11),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: Color(0x33004466)),
@@ -60,7 +75,7 @@ abstract final class AppTheme {
         color: Color(0x22004466),
         thickness: 1,
       ),
-      iconTheme: const IconThemeData(color: Color(0xFF4A6D8C), size: 20),
+      iconTheme: const IconThemeData(color: _lightTextSub, size: 20),
     );
   }
 
@@ -77,24 +92,23 @@ abstract final class AppTheme {
         onSurface: AppColors.textPrimary,
         onPrimary: Colors.white,
       ),
-      textTheme: GoogleFonts.manropeTextTheme(ThemeData.dark().textTheme)
-          .copyWith(
-            displayLarge: AppTextStyles.display,
-            headlineMedium: AppTextStyles.headline,
-            titleLarge: AppTextStyles.title,
-            bodyLarge: AppTextStyles.bodyLarge,
-            bodyMedium: AppTextStyles.body,
-            bodySmall: AppTextStyles.caption,
-            labelMedium: AppTextStyles.label,
-            labelSmall: AppTextStyles.labelSmall,
-          ),
+      textTheme: GoogleFonts.manropeTextTheme(ThemeData.dark().textTheme).copyWith(
+        displayLarge: AppTextStyles.display.copyWith(color: AppColors.textPrimary),
+        headlineMedium: AppTextStyles.headline.copyWith(color: AppColors.textPrimary),
+        titleLarge: AppTextStyles.title.copyWith(color: AppColors.textPrimary),
+        bodyLarge: AppTextStyles.bodyLarge.copyWith(color: AppColors.textPrimary),
+        bodyMedium: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
+        bodySmall: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+        labelMedium: AppTextStyles.label.copyWith(color: AppColors.textPrimary),
+        labelSmall: AppTextStyles.labelSmall.copyWith(color: AppColors.textSecondary),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.background.withValues(alpha: 0.84),
         elevation: 0,
         centerTitle: true,
         scrolledUnderElevation: 0,
         iconTheme: const IconThemeData(color: AppColors.textPrimary),
-        titleTextStyle: AppTextStyles.title,
+        titleTextStyle: AppTextStyles.title.copyWith(color: AppColors.textPrimary),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface.withValues(alpha: 0.9),
@@ -135,15 +149,13 @@ abstract final class AppTheme {
           borderSide: const BorderSide(color: AppColors.incorrect, width: 1.5),
         ),
         hintStyle: AppTextStyles.body.copyWith(color: AppColors.textDisabled),
-        labelStyle: AppTextStyles.caption.copyWith(
-          color: AppColors.textSecondary,
-        ),
+        labelStyle: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
         errorStyle: AppTextStyles.caption.copyWith(color: AppColors.incorrect),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.surface2,
-        contentTextStyle: AppTextStyles.body,
+        contentTextStyle: AppTextStyles.body.copyWith(color: AppColors.textPrimary),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
           side: const BorderSide(color: AppColors.border),

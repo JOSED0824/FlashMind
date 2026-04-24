@@ -20,14 +20,14 @@ class ShimmerLoader extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.surface2,
+        color: context.acSurface2,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
     )
         .animate(onPlay: (controller) => controller.repeat())
         .shimmer(
           duration: 1200.ms,
-          color: AppColors.surface.withValues(alpha: 0.6),
+          color: context.acSurface.withValues(alpha: 0.6),
         );
   }
 }

@@ -67,12 +67,10 @@ class _FilterChip extends StatelessWidget {
                   end: Alignment.centerRight,
                 )
               : null,
-          color: isSelected ? null : AppColors.surface.withValues(alpha: 0.82),
+          color: isSelected ? null : context.acSurface.withValues(alpha: 0.82),
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : AppColors.border,
+            color: isSelected ? Colors.transparent : context.acBorder,
           ),
           boxShadow: isSelected
               ? [
@@ -87,9 +85,7 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: AppTextStyles.label.copyWith(
-            color: isSelected
-                ? Colors.white
-                : AppColors.textSecondary,
+            color: isSelected ? Colors.white : context.acTextSub,
             fontSize: 11,
           ),
         ),

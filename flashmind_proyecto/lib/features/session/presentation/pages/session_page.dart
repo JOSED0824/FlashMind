@@ -113,7 +113,7 @@ class _SessionPageState extends State<SessionPage> {
                         child: LinearProgressIndicator(
                           value:
                               (state.currentIndex + 1) / state.totalQuestions,
-                          backgroundColor: AppColors.border,
+                          backgroundColor: context.acBorder,
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             AppColors.accentStart,
                           ),
@@ -252,13 +252,13 @@ class _SessionPageState extends State<SessionPage> {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: AppColors.surface2,
+                color: context.acSurface2,
                 borderRadius: BorderRadius.circular(999),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.close_rounded,
                 size: 20,
-                color: AppColors.textSecondary,
+                color: context.acTextSub,
               ),
             ),
           ),

@@ -18,8 +18,8 @@ class GoogleSignInButton extends StatelessWidget {
             ? null
             : () => context.read<AuthCubit>().signInWithGoogle(),
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.border),
-          backgroundColor: AppColors.surface,
+          side: BorderSide(color: context.acBorder),
+          backgroundColor: context.acSurface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -31,7 +31,7 @@ class GoogleSignInButton extends StatelessWidget {
             const SizedBox(width: 12),
             Text(
               'Continuar con Google',
-              style: AppTextStyles.label.copyWith(color: AppColors.textPrimary),
+              style: AppTextStyles.label.copyWith(color: context.acText),
             ),
           ],
         ),
@@ -47,15 +47,15 @@ class AuthDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+        Expanded(child: Divider(color: context.acBorder, thickness: 1)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
             'o continúa con',
-            style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+            style: AppTextStyles.caption.copyWith(color: context.acTextSub),
           ),
         ),
-        const Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+        Expanded(child: Divider(color: context.acBorder, thickness: 1)),
       ],
     );
   }

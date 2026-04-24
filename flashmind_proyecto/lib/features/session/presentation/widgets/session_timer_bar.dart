@@ -39,7 +39,7 @@ class SessionTimerBar extends StatelessWidget {
                 height: 4,
                 child: LinearProgressIndicator(
                   value: _progress,
-                  backgroundColor: AppColors.surface2,
+                  backgroundColor: context.acSurface2,
                   valueColor: AlwaysStoppedAnimation<Color>(_barColor),
                 ),
               ),

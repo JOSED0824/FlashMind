@@ -84,10 +84,10 @@ class TopicCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.quiz_rounded,
                           size: 12,
-                          color: AppColors.textDisabled,
+                          color: context.acTextSub,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -95,10 +95,10 @@ class TopicCard extends StatelessWidget {
                           style: AppTextStyles.labelSmall,
                         ),
                         const SizedBox(width: 12),
-                        const Icon(
+                        Icon(
                           Icons.timer_rounded,
                           size: 12,
-                          color: AppColors.textDisabled,
+                          color: context.acTextSub,
                         ),
                         const SizedBox(width: 4),
                         Text(
@@ -111,11 +111,11 @@ class TopicCard extends StatelessWidget {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(right: 14),
+            Padding(
+              padding: const EdgeInsets.only(right: 14),
               child: Icon(
                 Icons.chevron_right_rounded,
-                color: AppColors.textDisabled,
+                color: context.acTextSub,
                 size: 20,
               ),
             ),
