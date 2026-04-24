@@ -64,6 +64,7 @@ dev_dependencies:
   # Mocking in tests
   mocktail: ^1.0.4
 
+
 flutter:
   uses-material-design: true
 
