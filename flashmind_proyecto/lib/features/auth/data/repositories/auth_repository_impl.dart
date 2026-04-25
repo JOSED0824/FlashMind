@@ -66,4 +66,28 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> updatePhotoUrl(String photoUrl) async {
+    try {
+      final entity = await dataSource.updatePhotoUrl(photoUrl);
+      return Right(entity);
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateUsername(String username) async {
+    try {
+      final entity = await dataSource.updateUsername(username);
+      return Right(entity);
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(e.message));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
 }

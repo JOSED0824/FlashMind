@@ -5,27 +5,37 @@ import '../../../../core/utils/either.dart';
 import '../../domain/entities/session_result_entity.dart';
 import '../../domain/usecases/get_questions_for_topic.dart';
 import '../../domain/usecases/save_session_result.dart';
+import '../../../../features/home/data/datasources/home_local_data_source.dart';
+import '../../../../services/supabase_service.dart';
 import 'session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   final GetQuestionsForTopic _getQuestionsForTopic;
   final SaveSessionResult _saveSessionResult;
+  final HomeLocalDataSource _homeDataSource;
+  final SupabaseService _supabaseService;
 
   Timer? _timer;
   late String _topicId;
   late String _categoryId;
+  late String _userId;
   late int _totalSeconds;
 
   SessionCubit({
     required GetQuestionsForTopic getQuestionsForTopic,
     required SaveSessionResult saveSessionResult,
+    required HomeLocalDataSource homeDataSource,
+    required SupabaseService supabaseService,
   })  : _getQuestionsForTopic = getQuestionsForTopic,
         _saveSessionResult = saveSessionResult,
+        _homeDataSource = homeDataSource,
+        _supabaseService = supabaseService,
         super(const SessionInitial());
 
-  Future<void> startSession(String topicId, String categoryId) async {
+  Future<void> startSession(String topicId, String categoryId, String userId) async {
     _topicId = topicId;
     _categoryId = categoryId;
+    _userId = userId;
     _totalSeconds = AppDurations.sessionDuration.inSeconds;
 
     emit(const SessionLoading());
@@ -123,6 +133,7 @@ class SessionCubit extends Cubit<SessionState> {
     final timeTaken = _totalSeconds - current.secondsRemaining;
 
     final result = SessionResultEntity(
+      userId: _userId,
       topicId: _topicId,
       categoryId: _categoryId,
       totalQuestions: current.totalQuestions,
@@ -134,7 +145,51 @@ class SessionCubit extends Cubit<SessionState> {
     );
 
     _saveSessionResult(result);
+    _updateProgress(result);
     emit(SessionComplete(result));
+  }
+
+  Future<void> _updateProgress(SessionResultEntity result) async {
+    try {
+      final progress = await _homeDataSource.getUserProgress(_userId);
+
+      final today = DateTime.now();
+      final todayDate = DateTime(today.year, today.month, today.day);
+      final lastDate = progress.lastSessionDate != null
+          ? DateTime(
+              progress.lastSessionDate!.year,
+              progress.lastSessionDate!.month,
+              progress.lastSessionDate!.day,
+            )
+          : null;
+
+      int newStreak;
+      if (lastDate == null) {
+        newStreak = 1;
+      } else if (lastDate == todayDate) {
+        newStreak = progress.currentStreak;
+      } else if (todayDate.difference(lastDate).inDays == 1) {
+        newStreak = progress.currentStreak + 1;
+      } else {
+        newStreak = 1;
+      }
+
+      final updatedTopics = List<String>.from(progress.completedTopicIds);
+      if (!updatedTopics.contains(result.topicId)) {
+        updatedTopics.add(result.topicId);
+      }
+
+      progress.totalPoints += result.pointsEarned;
+      progress.totalSessions += 1;
+      progress.currentStreak = newStreak;
+      progress.longestStreak =
+          newStreak > progress.longestStreak ? newStreak : progress.longestStreak;
+      progress.lastSessionDate = today;
+      progress.completedTopicIds = updatedTopics;
+
+      await _homeDataSource.saveUserProgress(progress);
+      await _supabaseService.pushProgress(_userId);
+    } catch (_) {}
   }
 
   @override

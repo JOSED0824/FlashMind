@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/cubit/profile_cubit.dart';
 import '../../features/auth/presentation/pages/auth_page.dart';
 import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../onboarding/onboarding_page.dart';
 import '../../features/results/presentation/cubit/results_cubit.dart';
 import '../../features/results/presentation/pages/results_page.dart';
 import '../../features/session/domain/entities/session_result_entity.dart';
@@ -36,17 +38,25 @@ GoRouter createRouter() {
         builder: (_, state) => const SplashPage(),
       ),
       GoRoute(
+        path: RouteNames.onboarding,
+        builder: (_, state) => const OnboardingPage(),
+      ),
+      GoRoute(
         path: RouteNames.auth,
-        builder: (_, state) => BlocProvider(
-          create: (_) => sl<AuthCubit>(),
+        builder: (_, state) => BlocProvider.value(
+          value: sl<AuthCubit>(),
           child: const AuthPage(),
         ),
       ),
       GoRoute(
         path: RouteNames.home,
         builder: (_, state) {
-          return BlocProvider(
-            create: (_) => sl<HomeCubit>(),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl<AuthCubit>()),
+              BlocProvider(create: (_) => sl<HomeCubit>()),
+              BlocProvider(create: (_) => sl<ProfileCubit>()),
+            ],
             child: HomePage(
               userId: _currentUserId,
               username: _currentUsername,
@@ -80,6 +90,7 @@ GoRouter createRouter() {
                     child: SessionPage(
                       topicId: extra['topicId'] as String,
                       categoryId: extra['categoryId'] as String,
+                      userId: _currentUserId,
                     ),
                   );
                 },

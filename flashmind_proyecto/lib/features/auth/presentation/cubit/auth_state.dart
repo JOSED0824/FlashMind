@@ -22,10 +22,12 @@ class AuthLoading extends AuthState {
 
 class AuthSuccess extends AuthState {
   final UserEntity user;
-  const AuthSuccess(this.user);
+  final bool isNewUser;
+
+  const AuthSuccess(this.user, {this.isNewUser = false});
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [user, isNewUser];
 }
 
 class AuthFailure extends AuthState {

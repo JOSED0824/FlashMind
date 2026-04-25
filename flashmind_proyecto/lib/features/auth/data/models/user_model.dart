@@ -20,12 +20,16 @@ class UserModel extends HiveObject {
   @HiveField(4)
   final DateTime createdAt;
 
+  @HiveField(5)
+  final String? photoUrl;
+
   UserModel({
     required this.id,
     required this.username,
     required this.email,
     required this.passwordHash,
     required this.createdAt,
+    this.photoUrl,
   });
 
   UserEntity toEntity() => UserEntity(
@@ -33,6 +37,7 @@ class UserModel extends HiveObject {
         username: username,
         email: email,
         createdAt: createdAt,
+        photoUrl: photoUrl,
       );
 
   factory UserModel.fromEntity(UserEntity entity, String passwordHash) =>
@@ -42,5 +47,15 @@ class UserModel extends HiveObject {
         email: entity.email,
         passwordHash: passwordHash,
         createdAt: entity.createdAt,
+        photoUrl: entity.photoUrl,
+      );
+
+  UserModel withPhotoUrl(String? url) => UserModel(
+        id: id,
+        username: username,
+        email: email,
+        passwordHash: passwordHash,
+        createdAt: createdAt,
+        photoUrl: url,
       );
 }

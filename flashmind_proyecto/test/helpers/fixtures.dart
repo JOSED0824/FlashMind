@@ -64,6 +64,7 @@ const tQuestion2 = QuestionEntity(
 );
 
 final tResult = SessionResultEntity(
+  userId: 'user1',
   topicId: 'topic1',
   categoryId: 'cat1',
   totalQuestions: 5,

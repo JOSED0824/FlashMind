@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/theme/theme_cubit.dart';
 import 'features/auth/data/datasources/firebase_auth_data_source.dart';
@@ -12,7 +13,13 @@ import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/domain/usecases/login_user.dart';
 import 'features/auth/domain/usecases/logout_user.dart';
 import 'features/auth/domain/usecases/register_user.dart';
+import 'features/auth/domain/usecases/update_user_photo.dart';
+import 'features/auth/domain/usecases/update_username.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'features/auth/presentation/cubit/profile_cubit.dart';
+import 'services/cloudinary_service.dart';
+import 'services/supabase_service.dart';
+import 'services/tts_service.dart';
 
 import 'features/home/data/datasources/home_local_data_source.dart';
 import 'features/home/data/models/progress_model.dart';
@@ -48,10 +55,12 @@ Future<void> initDependencies() async {
   // Open boxes
   final progressBox = await Hive.openBox<ProgressModel>('progress');
   final sessionsBox = await Hive.openBox('sessions');
+  final settingsBox = await Hive.openBox('settings');
 
   // Register boxes
   sl.registerSingleton<Box<ProgressModel>>(progressBox);
   sl.registerSingleton<Box>(sessionsBox, instanceName: 'sessions');
+  sl.registerSingleton<Box>(settingsBox, instanceName: 'settings');
 
   // ── Theme ─────────────────────────────────────────────────────────────
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
@@ -69,7 +78,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => LoginUser(sl()));
   sl.registerLazySingleton(() => RegisterUser(sl()));
   sl.registerLazySingleton(() => LogoutUser(sl()));
-  sl.registerFactory(
+  sl.registerLazySingleton(() => UpdateUserPhoto(sl()));
+  sl.registerLazySingleton(() => UpdateUsername(sl()));
+  sl.registerLazySingleton(
     () => AuthCubit(
       loginUser: sl(),
       registerUser: sl(),
@@ -78,6 +89,24 @@ Future<void> initDependencies() async {
     ),
   );
 
+  // ── Cloudinary & Profile ──────────────────────────────────────────────
+  sl.registerLazySingleton<CloudinaryService>(
+    () => const CloudinaryService(uploadPreset: 'flashmind_profile'),
+  );
+  sl.registerFactory(
+    () => ProfileCubit(
+      cloudinaryService: sl(),
+      updateUserPhoto: sl(),
+      updateUsername: sl(),
+    ),
+  );
+
+  // ── Supabase ──────────────────────────────────────────────────────────
+  sl.registerLazySingleton<SupabaseService>(
+    () => SupabaseService(Supabase.instance.client, sl<Box<ProgressModel>>()),
+  );
+  // ── TTS ──────────────────────────────────────────────────
+  sl.registerLazySingleton<TtsService>(() => TtsService());
   // ── Home ──────────────────────────────────────────────────────────────
   sl.registerLazySingleton<HomeLocalDataSource>(
     () => HomeLocalDataSourceImpl(sl<Box<ProgressModel>>()),
@@ -86,7 +115,11 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => GetCategories(sl()));
   sl.registerLazySingleton(() => GetUserProgress(sl()));
   sl.registerFactory(
-    () => HomeCubit(getCategories: sl(), getUserProgress: sl()),
+    () => HomeCubit(
+      getCategories: sl(),
+      getUserProgress: sl(),
+      supabaseService: sl(),
+    ),
   );
 
   // ── Session ───────────────────────────────────────────────────────────
@@ -101,7 +134,12 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => SaveSessionResult(sl()));
   sl.registerFactory(() => TopicSelectionCubit(getTopicsByCategory: sl()));
   sl.registerFactory(
-    () => SessionCubit(getQuestionsForTopic: sl(), saveSessionResult: sl()),
+    () => SessionCubit(
+      getQuestionsForTopic: sl(),
+      saveSessionResult: sl(),
+      homeDataSource: sl(),
+      supabaseService: sl(),
+    ),
   );
 
   // ── Results ───────────────────────────────────────────────────────────

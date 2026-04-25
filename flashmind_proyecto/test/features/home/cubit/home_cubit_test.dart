@@ -12,6 +12,7 @@ import '../../../helpers/mocks.dart';
 void main() {
   late MockGetCategories mockGetCategories;
   late MockGetUserProgress mockGetUserProgress;
+  late MockSupabaseService mockSupabaseService;
   late HomeCubit cubit;
 
   setUpAll(() {
@@ -21,9 +22,13 @@ void main() {
   setUp(() {
     mockGetCategories = MockGetCategories();
     mockGetUserProgress = MockGetUserProgress();
+    mockSupabaseService = MockSupabaseService();
+    when(() => mockSupabaseService.syncProgress(any()))
+        .thenAnswer((_) async {});
     cubit = HomeCubit(
       getCategories: mockGetCategories,
       getUserProgress: mockGetUserProgress,
+      supabaseService: mockSupabaseService,
     );
   });
 

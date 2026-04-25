@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/either.dart';
 import '../../../../core/utils/no_params.dart';
 import '../../../../core/router/app_router.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_user.dart';
 import '../../domain/usecases/logout_user.dart';
 import '../../domain/usecases/register_user.dart';
@@ -70,7 +71,7 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) => emit(AuthFailure(failure.message)),
       (user) {
         setCurrentUser(user.id, user.username);
-        emit(AuthSuccess(user));
+        emit(AuthSuccess(user, isNewUser: true));
       },
     );
   }
@@ -90,5 +91,12 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     await _logoutUser(const NoParams());
     emit(const AuthInitial());
+  }
+
+  void updateUser(UserEntity updatedUser) {
+    if (state is AuthSuccess) {
+      setCurrentUser(updatedUser.id, updatedUser.username);
+      emit(AuthSuccess(updatedUser));
+    }
   }
 }

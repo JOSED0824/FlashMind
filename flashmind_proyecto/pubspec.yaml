@@ -51,6 +51,16 @@ dependencies:
   provider: ^6.1.5+1
   flutter_local_notifications: ^21.0.0
 
+  # Image upload
+  http: ^1.2.2
+  image_picker: ^1.1.2
+
+  # Cloud database
+  supabase_flutter: ^2.5.0
+
+  # Text-to-Speech (external service — device TTS engine)
+  flutter_tts: ^4.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

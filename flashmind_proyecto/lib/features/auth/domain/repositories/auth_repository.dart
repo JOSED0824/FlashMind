@@ -8,4 +8,6 @@ abstract interface class AuthRepository {
   Future<Either<Failure, UserEntity>> signInWithGoogle();
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, UserEntity?>> getCurrentUser();
+  Future<Either<Failure, UserEntity>> updatePhotoUrl(String photoUrl);
+  Future<Either<Failure, UserEntity>> updateUsername(String username);
 }

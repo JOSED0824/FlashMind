@@ -16,6 +16,7 @@ class UserAnswer extends Equatable {
 }
 
 class SessionResultEntity extends Equatable {
+  final String userId;
   final String topicId;
   final String categoryId;
   final int totalQuestions;
@@ -26,6 +27,7 @@ class SessionResultEntity extends Equatable {
   final List<UserAnswer> answers;
 
   const SessionResultEntity({
+    required this.userId,
     required this.topicId,
     required this.categoryId,
     required this.totalQuestions,

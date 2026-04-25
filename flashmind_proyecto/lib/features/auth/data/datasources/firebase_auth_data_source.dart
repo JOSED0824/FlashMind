@@ -10,6 +10,8 @@ abstract interface class FirebaseAuthDataSource {
   Future<UserEntity> signInWithGoogle();
   Future<void> logout();
   Future<UserEntity?> getCurrentUser();
+  Future<UserEntity> updatePhotoUrl(String photoUrl);
+  Future<UserEntity> updateUsername(String username);
 }
 
 class FirebaseAuthDataSourceImpl implements FirebaseAuthDataSource {
@@ -93,11 +95,44 @@ class FirebaseAuthDataSourceImpl implements FirebaseAuthDataSource {
     return _mapUser(user);
   }
 
+  @override
+  Future<UserEntity> updatePhotoUrl(String photoUrl) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw const ValidationException('No hay sesión activa');
+      await user.updatePhotoURL(photoUrl);
+      await user.reload();
+      return _mapUser(_auth.currentUser!);
+    } on FirebaseAuthException catch (e) {
+      throw ValidationException(_mapFirebaseError(e.code));
+    } catch (e) {
+      if (e is ValidationException) rethrow;
+      throw const ValidationException('Error al actualizar la foto de perfil');
+    }
+  }
+
+  @override
+  Future<UserEntity> updateUsername(String username) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) throw const ValidationException('No hay sesión activa');
+      await user.updateDisplayName(username.trim());
+      await user.reload();
+      return _mapUser(_auth.currentUser!);
+    } on FirebaseAuthException catch (e) {
+      throw ValidationException(_mapFirebaseError(e.code));
+    } catch (e) {
+      if (e is ValidationException) rethrow;
+      throw const ValidationException('Error al actualizar el nombre');
+    }
+  }
+
   UserEntity _mapUser(User user) => UserEntity(
         id: user.uid,
         username: user.displayName ?? user.email!.split('@').first,
         email: user.email ?? '',
         createdAt: user.metadata.creationTime ?? DateTime.now(),
+        photoUrl: user.photoURL,
       );
 
   String _mapFirebaseError(String code) {

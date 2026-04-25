@@ -19,7 +19,11 @@ class AuthPage extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          context.go(RouteNames.home);
+          if (state.isNewUser) {
+            context.go(RouteNames.onboarding);
+          } else {
+            context.go(RouteNames.home);
+          }
         }
       },
       child: Scaffold(

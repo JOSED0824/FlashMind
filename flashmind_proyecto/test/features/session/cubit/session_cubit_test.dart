@@ -1,4 +1,4 @@
-import 'package:flashmind_proyecto/core/errors/failures.dart';
+﻿import 'package:flashmind_proyecto/core/errors/failures.dart';
 import 'package:flashmind_proyecto/core/utils/either.dart';
 import 'package:flashmind_proyecto/features/session/presentation/cubit/session_cubit.dart';
 import 'package:flashmind_proyecto/features/session/presentation/cubit/session_state.dart';
@@ -11,6 +11,8 @@ import '../../../helpers/mocks.dart';
 void main() {
   late MockGetQuestionsForTopic mockGetQuestions;
   late MockSaveSessionResult mockSaveResult;
+  late MockHomeLocalDataSource mockHomeDataSource;
+  late MockSupabaseService mockSupabaseService;
   late SessionCubit cubit;
 
   setUpAll(() {
@@ -20,9 +22,13 @@ void main() {
   setUp(() {
     mockGetQuestions = MockGetQuestionsForTopic();
     mockSaveResult = MockSaveSessionResult();
+    mockHomeDataSource = MockHomeLocalDataSource();
+    mockSupabaseService = MockSupabaseService();
     cubit = SessionCubit(
       getQuestionsForTopic: mockGetQuestions,
       saveSessionResult: mockSaveResult,
+      homeDataSource: mockHomeDataSource,
+      supabaseService: mockSupabaseService,
     );
   });
 
@@ -32,7 +38,7 @@ void main() {
     expect(cubit.state, const SessionInitial());
   });
 
-  // ── startSession exitoso ────────────────────────────────────────────────────
+  // â”€â”€ startSession exitoso â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   test('startSession exitoso emite [SessionLoading, SessionInProgress]',
       () async {
@@ -41,20 +47,20 @@ void main() {
     );
     final future = cubit.stream.take(2).toList();
 
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
 
     final states = await future;
     expect(states[0], isA<SessionLoading>());
     expect(states[1], isA<SessionInProgress>());
   });
 
-  test('startSession establece correctamente las preguntas y el índice inicial',
+  test('startSession establece correctamente las preguntas y el Ã­ndice inicial',
       () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
 
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
 
     final state = cubit.state as SessionInProgress;
@@ -70,7 +76,7 @@ void main() {
       (_) async => Right([tQuestion]),
     );
 
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
 
     verify(() => mockGetQuestions('topic1')).called(1);
   });
@@ -81,7 +87,7 @@ void main() {
     );
     final future = cubit.stream.take(2).toList();
 
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
 
     expect(await future, [
       const SessionLoading(),
@@ -89,17 +95,17 @@ void main() {
     ]);
   });
 
-  // ── selectOption ────────────────────────────────────────────────────────────
+  // â”€â”€ selectOption â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   test('selectOption con respuesta correcta revela y suma puntos', () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
 
     final future = cubit.stream.take(1).toList();
-    cubit.selectOption(0); // índice 0 = correcto en tQuestion
+    cubit.selectOption(0); // Ã­ndice 0 = correcto en tQuestion
     await future;
 
     final state = cubit.state as SessionInProgress;
@@ -113,11 +119,11 @@ void main() {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
 
     final future = cubit.stream.take(1).toList();
-    cubit.selectOption(1); // índice 1 = incorrecto en tQuestion
+    cubit.selectOption(1); // Ã­ndice 1 = incorrecto en tQuestion
     await future;
 
     final state = cubit.state as SessionInProgress;
@@ -126,11 +132,11 @@ void main() {
     expect(state.currentPoints, 0);
   });
 
-  test('selectOption cuando ya está revelada no cambia estado', () async {
+  test('selectOption cuando ya estÃ¡ revelada no cambia estado', () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final firstFuture = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -149,13 +155,13 @@ void main() {
     expect((cubit.state as SessionInProgress).currentPoints, pointsAntes);
   });
 
-  // ── nextQuestion ────────────────────────────────────────────────────────────
+  // â”€â”€ nextQuestion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  test('nextQuestion avanza al siguiente índice y limpia respuesta', () async {
+  test('nextQuestion avanza al siguiente Ã­ndice y limpia respuesta', () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final f1 = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -175,7 +181,7 @@ void main() {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion, tQuestion2]),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final f1 = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -191,14 +197,14 @@ void main() {
     expect(state.answers.first.isCorrect, true);
   });
 
-  test('nextQuestion en última pregunta emite SessionComplete', () async {
+  test('nextQuestion en Ãºltima pregunta emite SessionComplete', () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion]),
     );
     when(() => mockSaveResult(any())).thenAnswer(
       (_) async => const Right(null),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final f1 = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -219,7 +225,7 @@ void main() {
     when(() => mockSaveResult(any())).thenAnswer(
       (_) async => const Right(null),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final f1 = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -236,14 +242,14 @@ void main() {
     expect(complete.result.pointsEarned, tQuestion.pointValue);
   });
 
-  test('nextQuestion en última pregunta llama SaveSessionResult', () async {
+  test('nextQuestion en Ãºltima pregunta llama SaveSessionResult', () async {
     when(() => mockGetQuestions(any())).thenAnswer(
       (_) async => Right([tQuestion]),
     );
     when(() => mockSaveResult(any())).thenAnswer(
       (_) async => const Right(null),
     );
-    await cubit.startSession('topic1', 'cat1');
+    await cubit.startSession('topic1', 'cat1', 'user1');
     await Future.delayed(Duration.zero);
     final f1 = cubit.stream.take(1).toList();
     cubit.selectOption(0);
@@ -256,9 +262,9 @@ void main() {
     verify(() => mockSaveResult(any())).called(1);
   });
 
-  // ── nextQuestion sin sesión activa ──────────────────────────────────────────
+  // â”€â”€ nextQuestion sin sesiÃ³n activa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-  test('nextQuestion sin sesión activa no cambia estado', () async {
+  test('nextQuestion sin sesiÃ³n activa no cambia estado', () async {
     final future = cubit.stream.take(1).toList().timeout(
           const Duration(milliseconds: 100),
           onTimeout: () => [],
@@ -268,3 +274,5 @@ void main() {
     expect(cubit.state, const SessionInitial());
   });
 }
+
+

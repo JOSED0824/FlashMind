@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/constants/app_text_styles.dart';
+import '../../../../../core/widgets/fire_streak_widget.dart';
 
 class HomeHeader extends StatelessWidget {
   final String username;
   final int streak;
+  final String? photoUrl;
 
-  const HomeHeader({super.key, required this.username, required this.streak});
+  const HomeHeader({
+    super.key,
+    required this.username,
+    required this.streak,
+    this.photoUrl,
+  });
 
   String get _greeting {
     final hour = DateTime.now().hour;
@@ -40,32 +47,21 @@ class HomeHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.accentStart.withValues(alpha: 0.95),
-                      AppColors.accentEnd.withValues(alpha: 0.95),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.18),
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    initial,
-                    style: AppTextStyles.title.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
+              CircleAvatar(
+                radius: 26,
+                backgroundColor:
+                    AppColors.accentStart.withValues(alpha: 0.95),
+                backgroundImage:
+                    photoUrl != null ? NetworkImage(photoUrl!) : null,
+                child: photoUrl == null
+                    ? Text(
+                        initial,
+                        style: AppTextStyles.title.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -113,37 +109,74 @@ class HomeHeader extends StatelessWidget {
                     vertical: 9,
                   ),
                   decoration: BoxDecoration(
-                    color: streak > 0
-                        ? AppColors.warning.withValues(alpha: 0.18)
-                        : context.acSurface2,
+                    gradient: streak > 0
+                        ? LinearGradient(
+                            colors: streak >= 7
+                                ? [
+                                    const Color(0xFFFF4500)
+                                        .withValues(alpha: 0.25),
+                                    const Color(0xFFFF6B00)
+                                        .withValues(alpha: 0.10),
+                                  ]
+                                : streak >= 3
+                                    ? [
+                                        const Color(0xFFFF8C00)
+                                            .withValues(alpha: 0.22),
+                                        AppColors.warning
+                                            .withValues(alpha: 0.08),
+                                      ]
+                                    : [
+                                        AppColors.warning
+                                            .withValues(alpha: 0.18),
+                                        AppColors.warning
+                                            .withValues(alpha: 0.06),
+                                      ],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          )
+                        : null,
+                    color: streak > 0 ? null : context.acSurface2,
                     borderRadius: BorderRadius.circular(999),
                     border: Border.all(
-                      color: streak > 0
-                          ? AppColors.warning.withValues(alpha: 0.3)
-                          : context.acBorder,
+                      color: streak >= 7
+                          ? const Color(0xFFFF4500).withValues(alpha: 0.50)
+                          : streak >= 3
+                              ? const Color(0xFFFF8C00).withValues(alpha: 0.45)
+                              : streak > 0
+                                  ? AppColors.warning.withValues(alpha: 0.4)
+                                  : context.acBorder,
                     ),
+                    boxShadow: streak > 0
+                        ? [
+                            BoxShadow(
+                              color: (streak >= 7
+                                      ? const Color(0xFFFF4500)
+                                      : streak >= 3
+                                          ? const Color(0xFFFF8C00)
+                                          : AppColors.warning)
+                                  .withValues(alpha: 0.30),
+                              blurRadius: 14,
+                              spreadRadius: 1,
+                            ),
+                          ]
+                        : null,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        streak > 0
-                            ? Icons.local_fire_department_rounded
-                            : Icons.bolt_rounded,
-                        color: streak > 0
-                            ? AppColors.warning
-                            : context.acTextSub,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
+                      FireStreakWidget(streak: streak, size: 22),
+                      const SizedBox(width: 6),
                       Text(
                         streak > 0
-                            ? '$streak dias de racha'
+                            ? '$streak ${streak == 1 ? 'día' : 'días'} de racha'
                             : 'Empieza hoy tu racha',
                         style: AppTextStyles.label.copyWith(
                           color: streak > 0
                               ? AppColors.warning
                               : context.acTextSub,
+                          fontWeight: streak > 0
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                         ),
                       ),
                     ],

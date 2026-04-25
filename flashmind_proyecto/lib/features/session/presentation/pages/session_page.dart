@@ -8,6 +8,8 @@ import '../../../../../core/constants/app_durations.dart';
 import '../../../../../core/router/route_names.dart';
 import '../../../../../core/widgets/app_button.dart';
 import '../../../../../core/widgets/app_loading_indicator.dart';
+import '../../../../../injection.dart';
+import '../../../../../services/tts_service.dart';
 import '../cubit/session_cubit.dart';
 import '../cubit/session_state.dart';
 import '../widgets/circular_timer.dart';
@@ -16,11 +18,13 @@ import '../widgets/option_tile.dart';
 class SessionPage extends StatefulWidget {
   final String topicId;
   final String categoryId;
+  final String userId;
 
   const SessionPage({
     super.key,
     required this.topicId,
     required this.categoryId,
+    required this.userId,
   });
 
   @override
@@ -28,13 +32,34 @@ class SessionPage extends StatefulWidget {
 }
 
 class _SessionPageState extends State<SessionPage> {
+  final TtsService _tts = sl<TtsService>();
+  bool _isSpeaking = false;
+
   @override
   void initState() {
     super.initState();
     context.read<SessionCubit>().startSession(
       widget.topicId,
       widget.categoryId,
+      widget.userId,
     );
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
+
+  Future<void> _speak(String text) async {
+    setState(() => _isSpeaking = true);
+    await _tts.speak(text, categoryId: widget.categoryId);
+    if (mounted) setState(() => _isSpeaking = false);
+  }
+
+  Future<void> _stopSpeaking() async {
+    await _tts.stop();
+    if (mounted) setState(() => _isSpeaking = false);
   }
 
   @override
@@ -42,6 +67,7 @@ class _SessionPageState extends State<SessionPage> {
     return BlocListener<SessionCubit, SessionState>(
       listener: (context, state) {
         if (state is SessionComplete) {
+          _tts.stop();
           context.pushReplacement(RouteNames.results, extra: state.result);
         }
       },
@@ -146,9 +172,53 @@ class _SessionPageState extends State<SessionPage> {
                       ),
                     ],
                   ),
-                  child: Text(
-                    question.questionText,
-                    style: AppTextStyles.bodyLarge.copyWith(height: 1.5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              question.questionText,
+                              style: AppTextStyles.bodyLarge.copyWith(height: 1.5),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          // TTS speaker button
+                          GestureDetector(
+                            onTap: _isSpeaking
+                                ? _stopSpeaking
+                                : () => _speak(question.questionText),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: _isSpeaking
+                                    ? AppColors.accentStart.withValues(alpha: 0.18)
+                                    : context.acSurface2,
+                                borderRadius: BorderRadius.circular(999),
+                                border: Border.all(
+                                  color: _isSpeaking
+                                      ? AppColors.accentStart.withValues(alpha: 0.5)
+                                      : context.acBorder,
+                                ),
+                              ),
+                              child: Icon(
+                                _isSpeaking
+                                    ? Icons.stop_rounded
+                                    : Icons.volume_up_rounded,
+                                size: 18,
+                                color: _isSpeaking
+                                    ? AppColors.accentStart
+                                    : context.acTextSub,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -212,7 +282,10 @@ class _SessionPageState extends State<SessionPage> {
                     state.isLastQuestion
                         ? 'Ver resultados'
                         : 'Siguiente pregunta',
-                    onPressed: cubit.nextQuestion,
+                    onPressed: () {
+                      _stopSpeaking();
+                      cubit.nextQuestion();
+                    },
                     icon: state.isLastQuestion
                         ? Icons.emoji_events_rounded
                         : Icons.arrow_forward_rounded,
